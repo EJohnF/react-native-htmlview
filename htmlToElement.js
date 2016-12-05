@@ -4,7 +4,7 @@ var htmlparser = require('htmlparser2-without-node-native')
 var entities = require('entities')
 
 var {
-  Text,
+  Text, View
 } = ReactNative
 
 var Image = require('./helper/Image')
@@ -56,16 +56,22 @@ function htmlToElement(rawHtml, opts, done) {
         if (node.name == 'a' && node.attribs && node.attribs.href) {
           linkPressHandler = () => opts.linkHandler(entities.decodeHTML(node.attribs.href))
         }
-
+        console.log(node.type)
         return (
-          <Text key={index} onPress={linkPressHandler}>
+          <View key={index} onPress={linkPressHandler}>
+            <Text>
             {node.name == 'pre' ? LINE_BREAK : null}
             {node.name == 'li' ? BULLET : null}
+              </Text>
             {domToElement(node.children, node)}
+            <Text>
             {node.name == 'br' || node.name == 'li' ? LINE_BREAK : null}
             {node.name == 'p' && index < list.length - 1 ? PARAGRAPH_BREAK : null}
-            {node.name == 'h1' || node.name == 'h2' || node.name == 'h3' || node.name == 'h4' || node.name == 'h5' ? LINE_BREAK : null}
-          </Text>
+            {node.name == 'h1' || node.name == 'h2' || node.name == 'h3' || node.name == 'h4' || node.name == 'h5' ? PARAGRAPH_BREAK : null}
+
+              </Text>
+              {node.name == 'hr' && <View style={{height:1, backgoundColor:'black'}}/>}
+          </View>
         )
       }
     })
